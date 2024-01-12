@@ -1,18 +1,23 @@
 import {Bot} from "grammy";
 
-
 function urlParseHashParams(locationHash: string) {
+    console.info("urlParseHashParams start.")
+    console.info(locationHash)
     locationHash = locationHash.replace(/^#/, '');
-    var params: { [key: string]: any } = {_path: ""};
+    console.info(locationHash)
+    let params: { [key: string]: any } = {_path: ""};
     if (!locationHash.length) {
+        console.info("urlParseHashParams 1.")
         return params;
     }
     if (locationHash.indexOf('=') < 0 && locationHash.indexOf('?') < 0) {
         params._path = urlSafeDecode(locationHash);
+        console.info("urlParseHashParams 2.")
         return params;
     }
     var qIndex = locationHash.indexOf('?');
     if (qIndex >= 0) {
+        console.info("urlParseHashParams 3.")
         var pathParam = locationHash.substr(0, qIndex);
         params._path = urlSafeDecode(pathParam);
         locationHash = locationHash.substr(qIndex + 1);
@@ -20,10 +25,14 @@ function urlParseHashParams(locationHash: string) {
     var locationHashParams = locationHash.split('&');
     var i, param, paramName, paramValue;
     for (i = 0; i < locationHashParams.length; i++) {
+
         param = locationHashParams[i].split('=');
         paramName = urlSafeDecode(param[0]);
         paramValue = param[1] == null ? null : urlSafeDecode(param[1]);
         params[paramName] = paramValue;
+
+        console.info("paramName" + paramName)
+        console.info("paramValue" + paramValue)
     }
     return params;
 }
@@ -36,31 +45,11 @@ function urlSafeDecode(urlencoded: string): string {
     }
 }
 
-function endgame(target:any, playerId:string, score:number) {
-    alert("Pending...")
-    const bt = '6811958485:AAFtOWH3d-5lFCmZmyV1CS_cTNRCjtW4PVg';
-    const bot = new Bot(bt);
-    let chatId = target.getChatId();
-    let msgId = target.getMsgId();
-    let tgId = target.getTgId();
-    if (chatId && msgId && tgId) {
-        bot.api.setGameScore(chatId, msgId, tgId, score, {force: true}).catch(r => {
-            console.error(r)
-        });
-    } else {
-        console.error("setGameScore fail")
-    }
-}
 
 function main() {
-    let locationHash = '';
-    try {
-        locationHash = location.hash.toString();
-    } catch (e) {
-    }
-
+    let url = new URL(location.href);
     window.PopcoinGameProxy = {
-        initParams: urlParseHashParams(locationHash),
+        urlSearchInfo: url.searchParams,
         shareScore: function () {
             if (window && window.TelegramGameProxy) {
                 window.TelegramGameProxy.shareScore();
@@ -73,23 +62,35 @@ function main() {
             alert("Pending...")
         },
 
-        gameEndCallback: function (type: string, playerId: string, playerScore: bigint, competitorId?: string, competitorScore?: bigint,): any {
-            alert("Pending...")
+        updateGameScore: function (score: number): any {
+            const bot = new Bot("6811958485:AAFtOWH3d-5lFCmZmyV1CS_cTNRCjtW4PVg");
+            let chatId = this.getChatId();
+            let msgId = this.getMsgId();
+            let tgId = this.getTgId();
+            if (chatId && msgId && tgId) {
+                bot.api.setGameScore(chatId, msgId, tgId, score, {force: true}).catch(r => {
+                    console.error(r)
+                });
+            } else {
+                console.error("Fail to setGameScore")
+                console.error("p_chat_id="+chatId)
+                console.error("p_msg_id="+msgId)
+                console.error("p_tg_id="+tgId)
+            }
         },
         getChatId: function (): string {
-            return this.initParams["p_chat_id"];
+            this.urlSearchInfo.forEach(function(value:string, key:string) {
+                console.log(key, value);
+            });
+            return this.urlSearchInfo.get("p_chat_id");
         },
         getMsgId: function (): string {
-            return this.initParams["p_msg_id"];
+            return this.urlSearchInfo.get("p_msg_id");
         },
         getTgId: function (): string {
-            return this.initParams["p_tg_id"];
+            return this.urlSearchInfo.get("p_tg_id");
         },
-
-
-
     }
-
 }
 
 main();
