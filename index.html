@@ -2,18 +2,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My TypeScript Project</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My TypeScript Project</title>
 </head>
 <body>
 <script src="./dist/popcoin_sdk.js"></script>
 <script>
-  if (!window.location.search) {
-    window.location = "http://localhost:3000/?p_chat_id=chatId11&p_msg_id=messageId22&p_tg_id=userId33#abc=111"
-  }
+    if (!window.location.search) {
+        window.location = "http://localhost:3000/?p_chat_id=chatId11&p_msg_id=messageId22&p_tg_id=userId33#abc=111"
+    }
+
+    function showText() {
+        var textToShow = "getTgId=" + PopcoinGameProxy.getTgId() + "   getChatId=" + PopcoinGameProxy.getChatId() + "   getMsgId=" + PopcoinGameProxy.getMsgId();
+        document.getElementById("result").innerText = textToShow;
+        document.getElementById("run").innerText = "打开浏览器的Console, 可以看到调用 https://api.telegram.org";
+
+        try {
+            PopcoinGameProxy.updateGameScore(111);
+        } catch (e) {
+            alert(e);
+        }
+    }
 </script>
 
-<button> </button>
+
+<button onclick="showText()">点击测试</button>
+<div id="result"></div>
+<div >========================</div>
+<div id="run"></div>
 </body>
 </html>

@@ -73,13 +73,13 @@ function main() {
                 });
             } else {
                 console.error("Fail to setGameScore")
-                console.error("p_chat_id="+chatId)
-                console.error("p_msg_id="+msgId)
-                console.error("p_tg_id="+tgId)
+                console.error("p_chat_id=" + chatId)
+                console.error("p_msg_id=" + msgId)
+                console.error("p_tg_id=" + tgId)
             }
         },
         getChatId: function (): string {
-            this.urlSearchInfo.forEach(function(value:string, key:string) {
+            this.urlSearchInfo.forEach(function (value: string, key: string) {
                 console.log(key, value);
             });
             return this.urlSearchInfo.get("p_chat_id");
