@@ -1,60 +1,16 @@
 import {Bot} from "grammy";
-
-function urlParseHashParams(locationHash: string) {
-    console.info("urlParseHashParams start.")
-    console.info(locationHash)
-    locationHash = locationHash.replace(/^#/, '');
-    console.info(locationHash)
-    let params: { [key: string]: any } = {_path: ""};
-    if (!locationHash.length) {
-        console.info("urlParseHashParams 1.")
-        return params;
-    }
-    if (locationHash.indexOf('=') < 0 && locationHash.indexOf('?') < 0) {
-        params._path = urlSafeDecode(locationHash);
-        console.info("urlParseHashParams 2.")
-        return params;
-    }
-    var qIndex = locationHash.indexOf('?');
-    if (qIndex >= 0) {
-        console.info("urlParseHashParams 3.")
-        var pathParam = locationHash.substr(0, qIndex);
-        params._path = urlSafeDecode(pathParam);
-        locationHash = locationHash.substr(qIndex + 1);
-    }
-    var locationHashParams = locationHash.split('&');
-    var i, param, paramName, paramValue;
-    for (i = 0; i < locationHashParams.length; i++) {
-
-        param = locationHashParams[i].split('=');
-        paramName = urlSafeDecode(param[0]);
-        paramValue = param[1] == null ? null : urlSafeDecode(param[1]);
-        params[paramName] = paramValue;
-
-        console.info("paramName" + paramName)
-        console.info("paramValue" + paramValue)
-    }
-    return params;
-}
-
-function urlSafeDecode(urlencoded: string): string {
-    try {
-        return decodeURIComponent(urlencoded);
-    } catch (e) {
-        return urlencoded;
-    }
-}
+import {_TG_BOT_TOKEN} from "./config";
 
 
-function main() {
-    let url = new URL(location.href);
+function popcoin_sdk_main() {
+    let popcoin_loader_url = new URL(location.href);
     window.PopcoinGameProxy = {
-        urlSearchInfo: url.searchParams,
+        urlSearchInfo: popcoin_loader_url.searchParams,
         shareScore: function () {
             if (window && window.TelegramGameProxy) {
                 window.TelegramGameProxy.shareScore();
             } else {
-                alert("I need to run at Telegram game environment.")
+                alert("I need to run at Telegram Game Environment.")
             }
         },
 
@@ -63,7 +19,7 @@ function main() {
         },
 
         updateGameScore: function (score: number): any {
-            const bot = new Bot("6811958485:AAFtOWH3d-5lFCmZmyV1CS_cTNRCjtW4PVg");
+            const bot = new Bot(_TG_BOT_TOKEN);
             let chatId = this.getChatId();
             let msgId = this.getMsgId();
             let tgId = this.getTgId();
@@ -93,5 +49,5 @@ function main() {
     }
 }
 
-main();
+popcoin_sdk_main();
 

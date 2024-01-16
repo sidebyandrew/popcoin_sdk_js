@@ -1,0 +1,1 @@
+export const _TG_BOT_TOKEN = "6811958485:AAFJdiXhF3rrV11OKzewGoaKjCoOghY1DmA";
